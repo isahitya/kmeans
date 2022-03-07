@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -70,36 +71,30 @@ class KMeans:
                 return False
         return True
 
-    def plot(self):
-        fig, ax = plt.subplots(figsize=(12, 8))
-        for i, index in enumerate(self.clusters):
-            point = self.X[index].T
-            ax.scatter(*point)
-        for point in self.centroids:
-            ax.scatter(*point, marker="x", color="black", linewidth=2)
-        plt.show()
+    # def plot(self):
+    #     fig, ax = plt.subplots(figsize=(12, 8))
+    #     for i, index in enumerate(self.clusters):
+    #         point = self.X[index].T
+    #         ax.scatter(*point)
+    #     for point in self.centroids:
+    #         ax.scatter(*point, marker="x", color="black", linewidth=2)
+    #     plt.show()
+    
+    def generate_output(self):
+        output = ""
+        for index, each_cluster in enumerate(self.clusters):
+            for each in each_cluster:
+                output = output + str(self.X[each][0]) + " " + str(self.X[each][1]) + " " + str(index) + "\n"
+        return output
+
 
 if __name__ == "__main__":
-    # from sklearn.datasets import make_blobs
-
-    # X, y = make_blobs(
-    #     centers=3, n_samples=500, n_features=2, shuffle=True, random_state=40
-    # )
-    # print(X.shape)
-    # print(X)
-
-    # clusters = len(np.unique(y))
-    # print(clusters)
-
-    # k = KMeans(K=clusters, maximum_iterations=150)
-    # y_pred = k.predict(X)
-
-    f = open("input4.txt", "r")
-    clusters = 4
+    f = open(sys.argv[2], "r")
+    clusters = int(sys.argv[1])
+    
     
     X = []
     for x in f:
-        print(x)
         a, b = x.split("\t")
         X.append([a, b])
     
@@ -107,5 +102,8 @@ if __name__ == "__main__":
 
     k = KMeans(K=clusters, maximum_iterations=150)
     k.predict(X)
-
-    k.plot()
+    output = k.generate_output()
+    f = open("out.data", "w")
+    f.write(output)
+    f.close()
+    
